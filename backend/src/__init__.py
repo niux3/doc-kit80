@@ -87,6 +87,7 @@ def _setup_basic_routes(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Cycle de vie de l'application"""
+    from src.documentation.models import Category, Language, Post
     # Startup
     db.init_db()
 

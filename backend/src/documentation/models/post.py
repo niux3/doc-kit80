@@ -1,21 +1,28 @@
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
-from category import Category
+from sqlmodel import Field, SQLModel, Relationship
 
 
-class PostBase(BaseModel):
-    title: str
-    slug: str
-    content: str
-    category_id: int  # Clé étrangère logique pour la création / mise à jour
+class PostBase(SQLModel):
+    title: str = Field(unique=True)
+    slug: str = Field(unique=True)
+    content: str = Field(default="")
+    online: bool = Field(default=True)
+    category_id: Optional[int] = Field(
+        default=None,
+        foreign_key="documentation_categories.id"
+    )
+    language_id: Optional[int] = Field(
+        default=None,
+        foreign_key="documentation_languages.id"
+    )
 
 
-class Post(PostBase):
-    id: int
-    created_at: datetime
-    updated_at: datetime
-    category: Optional[Category] = None  # Relation imbriquée pour la lecture
+class Post(PostBase, table=True):
+    __tablename__ = "documentation_posts"
 
-    class Config:
-        from_attributes = True
+    id: int = Field(default=None, primary_key=True)
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+    category: Optional["Category"] = Relationship(back_populates="posts")
+    language: Optional["Language"] = Relationship(back_populates="posts")
