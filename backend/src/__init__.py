@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from src.settings import settings
 from src.database import db
+from src.documentation.models import Category, Language, Post
 
 
 def _setup_middlewares(app: FastAPI) -> None:
@@ -87,7 +88,6 @@ def _setup_basic_routes(app: FastAPI) -> None:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Cycle de vie de l'application"""
-    from src.documentation.models import Category, Language, Post
     # Startup
     db.init_db()
 
