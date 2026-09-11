@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from src.settings import settings
+from src.database import db
 
 
 def _setup_middlewares(app: FastAPI) -> None:
@@ -87,10 +88,7 @@ def _setup_basic_routes(app: FastAPI) -> None:
 async def lifespan(app: FastAPI):
     """Cycle de vie de l'application"""
     # Startup
-    print(f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} - {settings.APP_ENV}")
-
-    # from src.database import init_db
-    # init_db()
+    db.init_db()
 
     # Logging des APIs configurées
     # apis = {
@@ -123,6 +121,8 @@ def create_app() -> FastAPI:
     # _setup_routers(app)
     _setup_basic_routes(app)
     # _setup_exception_handlers(app)
+
+    print(f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} - {settings.APP_ENV}")
 
     return app
 

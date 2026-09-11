@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 
     # ============ APPLICATION ============
     APP_NAME: str = "doc-kit80"
-    APP_VERSION: str = "1.0.0"
+    APP_VERSION: str = "0.0.1"
     APP_ENV: str = "development"  # development, staging, production
     DEBUG: bool = True
 
@@ -30,11 +30,7 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # ============ BASE DE DONNÉES ============
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 5432
-    DB_USER: str = "postgres"
-    DB_PASSWORD: str = "postgres"
-    DB_NAME: str = "prospection_db"
+    DB_FILE: str = "data.db"
     DATABASE_URL: Optional[str] = None  # Sera construit automatiquement
 
     @field_validator("DATABASE_URL", mode="before")
@@ -43,15 +39,8 @@ class Settings(BaseSettings):
         """Construit l'URL de la BD si pas explicitement fournie"""
         if isinstance(v, str) and v:
             return v
-
-        # Construction depuis les variables individuelles
-        values = info.data
-        return (
-            f"postgresql://"
-            f"{values.get('DB_USER')}:{values.get('DB_PASSWORD')}"
-            f"@{values.get('DB_HOST')}:{values.get('DB_PORT')}"
-            f"/{values.get('DB_NAME')}"
-        )
+        db_file = info.data.get("DB_FILE", "data.db")
+        return f"sqlite:///{db_file}"
 
     # ============ CORS / SÉCURITÉ ============
     ALLOWED_ORIGINS: list[str] = [
