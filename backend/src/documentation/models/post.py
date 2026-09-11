@@ -1,12 +1,12 @@
 from typing import Optional
 from datetime import datetime
-from sqlmodel import Field, SQLModel, Relationship
+from sqlmodel import Field, SQLModel, Relationship, TEXT
 
 
 class PostBase(SQLModel):
     title: str = Field(unique=True)
     slug: str = Field(unique=True)
-    content: str = Field(default="")
+    content: str = Field(default="", sa_type=TEXT)
     online: bool = Field(default=True)
     category_id: Optional[int] = Field(
         default=None,
