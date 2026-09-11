@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from src.settings import settings
 from src.database import db
 from src.documentation.models import Category, Language, Post
+from src.registration.models import User
 
 
 def _setup_middlewares(app: FastAPI) -> None:
