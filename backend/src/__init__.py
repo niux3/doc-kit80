@@ -6,8 +6,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from src.settings import settings
-from src.database import db
+from src.core.settings import settings
+from src.core.database import db
 
 # --- models ---
 from src.documentation.models import Category, Language, Post
@@ -56,7 +56,7 @@ def _setup_basic_routes(app: FastAPI) -> None:
 
 def _setup_routers(app: FastAPI) -> None:
     """Enregistre tous les routers métier"""
-    app.include_router(language_router, prefix="/api/v1")
+    app.include_router(language_router.router, prefix="/api/v1")
 
 
 def _setup_exception_handlers(app: FastAPI) -> None:

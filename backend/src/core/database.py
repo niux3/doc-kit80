@@ -1,7 +1,7 @@
 # src/database.py
 from typing import Generator
 from sqlmodel import SQLModel, create_engine, Session
-from src.settings import settings
+from src.core.settings import settings
 
 
 class Database:
