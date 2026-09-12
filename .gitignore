@@ -26,13 +26,12 @@ archive.zip
 *~
 .*.sw?
 .cache
+Session.vim
+.ropeproject
 
 # macOS
 .DS_Store
-
 .codspeed
 
 # other
 /frontend/
-.ropeproject
-Session.vim
