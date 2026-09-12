@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from sqlmodel import Field, SQLModel, Relationship
 
 
@@ -13,3 +13,19 @@ class Language(LanguageBase, table=True):
     id: int = Field(default=None, primary_key=True)
     categories: List["Category"] = Relationship(back_populates="language")
     posts: List["Post"] = Relationship(back_populates="language")
+
+
+class LanguageRead(LanguageBase):
+    """Langage pour la lecture"""
+    id: int
+
+
+class LanguageCreate(LanguageBase):
+    """Langage pour la création"""
+    pass
+
+
+class LanguageUpdate(LanguageBase):
+    """Langage pour la modification"""
+    name: Optional[str] = None
+    abbr: Optional[str] = None
