@@ -1,5 +1,5 @@
 from src.documentation.models import Language, LanguageCreate, LanguageRead, LanguageUpdate
-from src.crud.base_router import CRUDRouter
+# from src.crud.base_router import CRUDRouter
 from typing import Type, TypeVar, Generic, List, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import SQLModel, Session, select
@@ -27,8 +27,10 @@ class CRUDRouter(Generic[ModelType, CreateType, ReadType, UpdateType]):
         self.update_schema = update_schema
 
         # Instanciation du router propre à cette entité
-        self.router = APIRouter(prefix=prefix, tags=tags or [
-                                model.__name__.lower()])
+        self.router = APIRouter(
+            prefix=prefix,
+            tags=tags or [model.__name__.lower()]
+        )
 
         # Enregistrement dynamique des méthodes comme handlers HTTP
         self._register_routes()
@@ -175,3 +177,20 @@ def _register_routes(self):
         status_code=status.HTTP_204_NO_CONTENT,
         dependencies=[Depends(get_current_user)],  # <-- Exige Auth
     )
+
+
+# 1. Tu instancies ton service SQLModel (qui hérite d'AbstractCRUD)
+language_service = SQLModelCRUD(model=Language)
+
+# 2. Tu injectes le service dans le CRUDRouter
+language_router = CRUDRouter(
+    crud_service=language_service,  # Valide car SQLModelCRUD est un AbstractCRUD
+    create_schema=LanguageCreate,
+    read_schema=LanguageRead,
+    update_schema=LanguageUpdate,
+    prefix="/languages",
+    tags=["Languages"]
+)
+
+# 3. Tu montres les routes dans FastAPI
+app.include_router(language_router.router)
