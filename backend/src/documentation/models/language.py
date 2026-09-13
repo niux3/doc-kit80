@@ -22,7 +22,7 @@ class LanguageRead(LanguageBase):
 
 class LanguageCreate(LanguageBase):
     """Langage pour la création"""
-    pass
+    ...
 
 
 class LanguageUpdate(LanguageBase):

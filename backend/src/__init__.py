@@ -14,7 +14,7 @@ from src.documentation.models import Category, Language, Post
 from src.registration.models import User
 
 # --- routes ---
-from src.documentation.routes import language_router
+from src.documentation.routes import documentation_routers
 
 
 def _setup_middlewares(app: FastAPI) -> None:
@@ -50,13 +50,14 @@ def _setup_basic_routes(app: FastAPI) -> None:
             "app": settings.APP_NAME,
             "version": settings.APP_VERSION,
             "environment": settings.APP_ENV,
-            "database": settings.DB_NAME,
         }
 
 
 def _setup_routers(app: FastAPI) -> None:
     """Enregistre tous les routers métier"""
-    app.include_router(language_router.router, prefix="/api/v1")
+    prefix = "/api/v1"
+    for router in documentation_routers:
+        app.include_router(router.router, prefix=prefix)
 
 
 def _setup_exception_handlers(app: FastAPI) -> None:

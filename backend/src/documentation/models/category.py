@@ -30,3 +30,23 @@ class Category(CategoryBase, table=True):
         sa_relationship_kwargs={"remote_side": "Category.id"}
     )
     children: List["Category"] = Relationship(back_populates="parent")
+
+
+class CategoryRead(CategoryBase):
+    """Catégorie pour la lecture"""
+    id: int
+
+
+class CategoryCreate(CategoryBase):
+    """Catégorie pour la création"""
+    ...
+
+
+class CategoryUpdate(CategoryBase):
+    """Catégorie pour la modification"""
+    name: Optional[str] = None
+    description: Optional[str] = None
+    lft: Optional[int] = None
+    rgt: Optional[int] = None
+    parent_id: Optional[int] = None
+    language_id: Optional[int] = None

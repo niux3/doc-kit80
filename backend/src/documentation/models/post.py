@@ -26,3 +26,23 @@ class Post(PostBase, table=True):
     updated_at: datetime = Field(default_factory=datetime.now)
     category: Optional["Category"] = Relationship(back_populates="posts")
     language: Optional["Language"] = Relationship(back_populates="posts")
+
+
+class PostRead(PostBase):
+    """Post pour la lecture"""
+    id: int
+
+
+class PostCreate(PostBase):
+    """Post pour la création"""
+    ...
+
+
+class PostUpdate(PostBase):
+    """Post pour la modification"""
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    content: Optional[str] = None
+    online: Optional[bool] = None
+    category_id: Optional[int] = None
+    language_id: Optional[int] = None

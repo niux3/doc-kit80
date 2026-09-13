@@ -1,3 +1,14 @@
+from documentation.services.post_crud import PostCRUD
+from documentation.models.post import PostCreate, PostRead, PostReadWithCategories, PostUpdate
+from core.database import db
+from core.crud.crud_router import CRUDRouter
+from sqlmodel import Session
+from fastapi import Depends, HTTPException, status
+from documentation.models.post import Post, PostCreate, PostUpdate
+from core.crud.sqlmodel_crud import SQLModelCRUD
+from sqlmodel.orm.strategy_options import selectinload
+from sqlmodel import Session, select
+from typing import Optional
 from src.documentation.models import Language, LanguageCreate, LanguageRead, LanguageUpdate
 # from src.crud.base_router import CRUDRouter
 from typing import Type, TypeVar, Generic, List, Optional
@@ -194,3 +205,52 @@ language_router = CRUDRouter(
 
 # 3. Tu montres les routes dans FastAPI
 app.include_router(language_router.router)
+
+# service
+
+# documentation/services/post_crud.py
+
+
+class PostCRUD(SQLModelCRUD[Post, PostCreate, PostUpdate]):
+    def __init__(self):
+        super().__init__(model=Post)
+
+    def get_with_categories(self, session: Session, post_id: int) -> Optional[Post]:
+        statement = (
+            select(Post)
+            .where(Post.id == post_id)
+            .options(selectinload(Post.categories))
+        )
+        return session.exec(statement).first()
+
+
+# documentation/routes/post.py
+
+
+class PostRouter(CRUDRouter):
+    def __init__(self, crud_service: PostCRUD):
+        super().__init__(
+            crud_service=crud_service,
+            create_schema=PostCreate,
+            read_schema=PostRead,
+            update_schema=PostUpdate,
+            prefix="/posts",
+            tags=["Posts"],
+        )
+        self.post_service = crud_service
+        self._register_custom_routes()
+
+    def _register_custom_routes(self):
+        @self.router.get("/{id}/categories", response_model=PostReadWithCategories)
+        def get_with_categories(id: int, session: Session = Depends(db.get_session)):
+            post = self.post_service.get_with_categories(session, post_id=id)
+            if not post:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Post {id} not found",
+                )
+            return post
+
+
+post_service = PostCRUD()
+router = PostRouter(crud_service=post_service).router
