@@ -30,17 +30,26 @@ class Settings(BaseSettings):
     PORT: int = 8000
 
     # ============ BASE DE DONNÉES ============
-    DB_FILE: str = "data.db"
+    DB_HOST: str = "localhost"
+    DB_PORT: int = 5432
+    DB_USER: str = "robert"
+    DB_PASSWORD: str = "password"
+    DB_NAME: str = "database"
     DATABASE_URL: Optional[str] = None  # Sera construit automatiquement
 
     @field_validator("DATABASE_URL", mode="before")
     @classmethod
     def assemble_db_url(cls, v: Optional[str], info) -> str:
-        """Construit l'URL de la BD si pas explicitement fournie"""
         if isinstance(v, str) and v:
             return v
-        db_file = info.data.get("DB_FILE", "data.db")
-        return f"sqlite:///{db_file}"
+
+        values = info.data
+        return (
+            f"postgresql+psycopg://"
+            f"{values.get('DB_USER')}:{values.get('DB_PASSWORD')}"
+            f"@{values.get('DB_HOST')}:{values.get('DB_PORT')}"
+            f"/{values.get('DB_NAME')}"
+        )
 
     # ============ CORS / SÉCURITÉ ============
     ALLOWED_ORIGINS: list[str] = [

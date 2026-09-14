@@ -1,63 +1,28 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
-
+from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-
-# 1. Importe SQLModel et ton singleton db / settings
+# 1. Imports SQLModel, Settings et Modèles
 from sqlmodel import SQLModel
-from src.settings import settings
+from src.core.settings import settings  # Ajusté selon l'arborescence
 
-# 2. Importe tous tes modèles pour qu'Alembic les détecte
-from src.documentation.models import Language, Category, Post
-from src.registration.models import User
+from src.documentation.models import Language, Category, Post  # noqa: F401
+from src.registration.models import User  # noqa: F401
 
+# 2. Initialisation de la configuration Alembic
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# 3. Lie les métadonnées de SQLModel
+# 3. Métadonnées et URL dynamique
 target_metadata = SQLModel.metadata
-
-# 4. Injecte l'URL de la BDD depuis tes settings
 config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
-
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
-# config = context.config
-
-# Interpret the config file for Python logging.
-# This line sets up loggers basically.
-# if config.config_file_name is not None:
-#     fileConfig(config.config_file_name)
-
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
-# target_metadata = mymodel.Base.metadata
-# target_metadata = None
-
-# other values from the config, defined by the needs of env.py,
-# can be acquired:
-# my_important_option = config.get_main_option("my_important_option")
-# ... etc.
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode.
-
-    This configures the context with just a URL
-    and not an Engine, though an Engine is acceptable
-    here as well.  By skipping the Engine creation
-    we don't even need a DBAPI to be available.
-
-    Calls to context.execute() here emit the given string to the
-    script output.
-
-    """
+    """Mode offline : génère le SQL sans se connecter à la BDD."""
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
         url=url,
@@ -71,12 +36,11 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode.
+    """Mode online : exécute les migrations directement sur la BDD."""
 
-    In this scenario we need to create an Engine
-    and associate a connection with the context.
+    # Active render_as_batch uniquement si on est sur SQLite
+    is_sqlite = settings.DATABASE_URL.startswith("sqlite")
 
-    """
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),
         prefix="sqlalchemy.",
@@ -87,7 +51,7 @@ def run_migrations_online() -> None:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
-            render_as_batch=True
+            render_as_batch=is_sqlite,
         )
 
         with context.begin_transaction():

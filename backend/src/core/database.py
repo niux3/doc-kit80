@@ -1,4 +1,3 @@
-# src/database.py
 from typing import Generator
 from sqlmodel import SQLModel, create_engine, Session
 from src.core.settings import settings
@@ -6,15 +5,18 @@ from src.core.settings import settings
 
 class Database:
     def __init__(self, db_url: str, debug: bool = False) -> None:
-        self.connect_args = {"check_same_thread": False}
+        connect_args = {}
+        if db_url.startswith("sqlite"):
+            connect_args["check_same_thread"] = False
+
         self.engine = create_engine(
             db_url,
             echo=debug,
-            connect_args=self.connect_args
+            connect_args=connect_args
         )
 
     def init_db(self) -> None:
-        """Crée les tables SQLite au démarrage."""
+        """Crée les tables au démarrage."""
         SQLModel.metadata.create_all(self.engine)
 
     def get_session(self) -> Generator[Session, None, None]:
