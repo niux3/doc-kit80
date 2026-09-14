@@ -1,0 +1,284 @@
+import { Router } from './Router'
+import { Middleware } from './Middleware'
+
+
+/**
+ * Core dispatcher class responsible for managing client-side routing,
+ * page life cycle lifecycle hooks, DOM event interception, and error handling.
+ */
+export class Dispatcher {
+    /**
+     * Creates an instance of Dispatcher.
+     *
+     * @param {Object} configuration - Application configuration instance.
+     * @param {Container} container - Dependency injection container.
+     */
+    constructor(configuration, container) {
+        /** @type {Router} */
+        this._router = new Router()
+        /** @type {Object|null} */
+        this._activePage = null
+        /** @type {Object|null} */
+        this._activeContext = null
+        /** @private @type {Middleware} */
+        this._middleware = new Middleware()
+        /** @private @type {Container} */
+        this._container = container
+        /** @type {Object} */
+        this._configuration = configuration
+        /** @type {HTMLElement} */
+        this._appContainer = configuration.appContainer
+    }
+
+    /**
+     * Registers a callback function for a specific lifecycle middleware event.
+     *
+     * @param {string} event - Lifecycle hook name (e.g., 'beforeLoad', 'afterRender').
+     * @param {Function} fn - Callback function to execute.
+     * @returns {this} The current Dispatcher instance for chaining.
+     */
+    use(event, fn) {
+        this._middleware.register(event, fn)
+        return this
+    }
+
+    /**
+     * Initializes global event listeners for navigation and boots the dispatcher.
+     * Listens for DOMContentLoaded, popstate, internal link clicks, form submissions, and custom SPA navigation events.
+     *
+     * @returns {void}
+     */
+    run() {
+        // 1. Charger la vue initiale
+        window.addEventListener('DOMContentLoaded', () => this._dispatch())
+
+        // 2. Gérer les boutons Précédent / Suivant du navigateur
+        window.addEventListener('popstate', () => this._dispatch())
+
+        // 3. Intercepter globalement tous les clics sur les liens <a> internes
+        document.addEventListener('click', (e) => {
+            const link = e.target.closest('a')
+            if (!link) return
+
+            const href = link.getAttribute('href') || ''
+
+            // 1. Gestion des ancres locales simples (ex: href="#lee")
+            if (href.startsWith('#')) {
+                // On laisse le comportement natif du navigateur pour défiler vers l'élément
+                // OU on gère le smooth scroll si l'élément existe dans le DOM
+                const targetEl = document.getElementById(href.substring(1))
+                if (targetEl) {
+                    e.preventDefault()
+                    targetEl.scrollIntoView({ behavior: 'smooth' })
+                    window.history.pushState(null, '', href)
+                }
+                return // On stoppe ici : ce n'est PAS un changement de page/route SPA
+            }
+
+            // 2. Le reste de ton intercepteur SPA classique pour les vraies pages (/about, /project/1)
+            const isSameOrigin = link.origin === window.location.origin
+            const isTargetSelf = !link.target || link.target === '_self'
+            const isStandardClick = e.button === 0 && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.altKey
+
+            if (isSameOrigin && isTargetSelf && isStandardClick && !link.hasAttribute('data-native')) {
+                e.preventDefault()
+                this.navigateTo(link.pathname + link.search + link.hash)
+            }
+        })
+
+        document.addEventListener('submit', (e) => {
+            const form = e.target.closest('form')
+            if (!form) return
+
+            e.preventDefault()
+
+            const action = form.getAttribute('action') || window.location.pathname
+            const method = (form.method || 'GET').toUpperCase()
+            const formData = new FormData(form)
+
+            this.navigateTo(action, {
+                method: method,
+                body: formData
+            })
+        })
+
+        window.addEventListener('spa:navigate', (e) => {
+            this.navigateTo(e.detail.url)
+        })
+    }
+
+    /**
+     * Programmatically navigates to a new URL path and triggers view resolution.
+     *
+     * @param {string} path - Target URL path.
+     * @param {Object} [options={}] - Additional navigation options (e.g., HTTP method, request body).
+     * @param {string} [options.method] - Request HTTP method ('GET', 'POST', etc.).
+     * @param {FormData|Object|null} [options.body] - Request body data.
+     * @returns {void}
+     */
+    navigateTo(path, options = {}) {
+        // Modifie l'URL sans rechargement
+        window.history.pushState({}, '', path)
+        // Déclenche le rendu de la nouvelle vue
+        this._dispatch(options)
+    }
+
+    /**
+     * Core lifecycle pipeline handler.
+     * Matches routes, triggers middleware hooks, manages controller instantiation, cleanup, rendering, and error handling.
+     *
+     * @private
+     * @param {Object} [options={}] - Navigation options.
+     * @returns {Promise<void>}
+     */
+    async _dispatch(options = {}) {
+        const route = this._router.getMatch()
+
+        const context = {
+            route,
+            params: route?.params ?? {},
+            method: options.method || route?.method || 'GET',
+            query: Object.fromEntries(new URLSearchParams(window.location.search)),
+            body: options.body || null,
+            view: null,
+            error: null,
+            // Référence directe au contexte de la page qu'on quitte
+            from: this._activeContext ? {
+                route: this._activeContext.route,
+                params: this._activeContext.params,
+                query: this._activeContext.query,
+                controller: this._activePage
+            } : null
+        }
+
+        try {
+            if (!route) throw new Error('404')
+
+            // -------------------------------------------------------------
+            // 1. LOAD (beforeLoad -> création controller -> afterLoad)
+            // -------------------------------------------------------------
+            if (await this._middleware.trigger('beforeLoad', context) === false) return
+
+            const instance = await this._resolveController(route.controller)
+            context.controller = instance
+
+            if (await this._middleware.trigger('afterLoad', context, instance) === false) return
+
+            // -------------------------------------------------------------
+            // 2. DESTROY de l'ancienne page (avant de basculer sur la nouvelle)
+            // -------------------------------------------------------------
+            if (this._activePage) {
+                const oldContext = { controller: this._activePage }
+                await this._middleware.trigger('beforeDestroy', oldContext, this._activePage)
+
+                this._cleanup() // Nettoyage DOM / Events
+
+                await this._middleware.trigger('afterDestroy', oldContext, this._activePage)
+            }
+
+            // -------------------------------------------------------------
+            // 3. RENDER (beforeRender -> action + render -> afterRender)
+            // -------------------------------------------------------------
+            if (await this._middleware.trigger('beforeRender', context, instance) === false) return
+
+            // Appel de l'action du contrôleur (ex: index(context))
+            context.view = await instance[route.action](context)
+
+            this._render(context.view)
+            this._activePage = instance
+            this._activeContext = context // stocke le contexte de la page actuelle pour le prochain dispatch
+
+            await this._middleware.trigger('afterRender', context, instance)
+
+        } catch (error) {
+            // -------------------------------------------------------------
+            // 4. ERROR (beforeError -> gestion erreur -> afterError)
+            // -------------------------------------------------------------
+            context.error = error
+
+            if (await this._middleware.trigger('beforeError', context, this._activePage) !== false) {
+                await this._errors(error)
+                await this._middleware.trigger('afterError', context, this._activePage)
+            }
+        }
+    }
+
+    /**
+     * Dynamically imports and instantiates a controller class by name.
+     *
+     * @private
+     * @param {string} name - Controller module file name (without extension).
+     * @returns {Promise<Object>} Instance of the resolved controller.
+     */
+    async _resolveController(name) {
+        let module
+
+        if (name === 'ErrorsController') {
+            module = await import(`./ErrorsController.js`)
+        } else {
+            // Le préfixe "../controllers/" et l'extension ".js" sont explicites
+            module = await import(`../controllers/${name}.js`)
+        }
+
+        const ControllerClass = module.default
+        return new ControllerClass(this._container)
+    }
+
+    /**
+     * Renders a DOM element or HTML string into the application container.
+     *
+     * @private
+     * @param {HTMLElement|string} view - The rendered template view or DOM element.
+     * @returns {void}
+     */
+    _render(view) {
+        if (view instanceof HTMLElement) {
+            this._appContainer.replaceChildren(view)
+        } else {
+            this._appContainer.innerHTML = view
+        }
+    }
+
+    /**
+     * Cleans up the active page controller and clears the container DOM.
+     * Calls the `destroy()` lifecycle method on the active controller if available.
+     *
+     * @private
+     * @returns {void}
+     */
+    _cleanup() {
+        if (this._activePage && typeof this._activePage.destroy === 'function') {
+            this._activePage.destroy()
+        }
+        // this._appContainer.innerHTML = '' // TODO: à revoir - pour le moment flash blanc entre les vues qui ne sont pas en cache
+        this._activePage = null
+    }
+
+    /**
+     * Handles exceptions caught during dispatching and renders fallback error views.
+     *
+     * @private
+     * @param {Error} e - Caught error instance.
+     * @returns {Promise<void>}
+     */
+    async _errors(e) {
+        if (this._configuration.debug) {
+            console.error("Critical Error: Erreur de chargement", e.message)
+        }
+        try {
+            const instance = await this._resolveController('ErrorsController')
+            const view = await instance.error(e.message)
+            this._render(view)
+        } catch (fallbackError) {
+            // Le contrôleur d'erreur lui-même a échoué (fichier manquant, etc.)
+            // — dernier filet, sans dépendance à quoi que ce soit d'autre.
+            if (this._configuration.debug) {
+                this._appContainer.innerHTML = `<h1>Erreur de chargement</h1><p>${e.message}</p>`
+            } else {
+                const instance = await this._resolveController('ErrorsController')
+                const view = await instance.error('500')
+                this._render(view)
+            }
+        }
+    }
+}

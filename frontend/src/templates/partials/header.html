@@ -1,0 +1,20 @@
+<header class="app-header">
+  <p>KIT 80</p>
+  <nav>
+    [[ for(const [routeName, text] of Object.entries(menu[currentLanguage])){ ]]
+    <a href="[[= helpers.urlFor(routeName, { lang: currentLanguage }) ]]" aria-current="[[= currentPath === helpers.urlFor(routeName, { lang: currentLanguage }) ? 'page' : 'false' ]]">[[= text]]</a>
+    [[ } ]]
+    <a href="https://alsacreations.com" target="_blank" rel="noopener noreferrer">Documentation</a>
+    <ui-selector label="[[= currentLanguage.toUpperCase() ]]">
+      <ul class="lang-list">
+        [[ for(const lang of languages){ ]]
+        <li><a href="[[= helpers.urlFor(currentRouteName, { lang }) ]]" data-value="[[= lang ]]">[[= lang.toUpperCase() ]]</a></li>
+        [[ } ]]
+      </ul>
+    </ui-selector>
+    <ui-toggle label="Passer en mode sombre ou clair" [[= theme === 'dark' ? 'checked' : '' ]]>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    </ui-toggle>
+  </nav>
+</header>

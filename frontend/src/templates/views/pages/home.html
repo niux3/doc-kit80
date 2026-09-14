@@ -1,0 +1,18 @@
+[[extends:base]]
+
+[[block:content]]
+  <h1>[[= title ]]</h1>
+  <p>[[= description ]]</p>
+
+  <section class="features-list">
+    <h2>[[= title2 ]]</h2>
+    <ul>
+    [[for(const feature of features){]]
+      <li>
+        <span class="label">[[= feature.label ]]</span>
+        <span class="status">[[= feature.status ]]</span>
+      </li>
+    [[}]]
+    </ul>
+  </section>
+[[/block]]
