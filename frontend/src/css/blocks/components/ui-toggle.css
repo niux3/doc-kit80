@@ -1,0 +1,15 @@
+ui-toggle{
+  display: flex;
+}
+ui-toggle button {
+  margin: auto;
+  background-color: transparent;
+  border: none;
+  color: var(--color-i);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+
+  &:hover{
+    color: var(--color-h);
+  }
+}

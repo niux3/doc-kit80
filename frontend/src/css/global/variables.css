@@ -1,0 +1,37 @@
+:root {
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius: 3px;
+}
+
+[data-theme="light"] {
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius: 3px;
+  --color-a: #f4f4f7;
+  --color-b: #ffffff;
+  --color-c: #d1d5db;
+  --color-d: #1e2228;
+  --color-e: #6b7280;
+  --color-f: #0055ff;
+  --color-g: #0044cc;
+  --color-h: #c10000;
+  --color-i: #1e2228;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] {
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --radius: 3px;
+  --color-a: #14171a;
+  --color-b: #1e2228;
+  --color-c: #2e353f;
+  --color-d: #d1d5db;
+  --color-e: #808a9d;
+  --color-f: #0055ff;
+  --color-g: #0044cc;
+  --color-h: #fff000;
+  --color-i: #f4f4f7;
+  --shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,31 @@
+.app-header {
+  background-color: var(--color-b);
+  border: 1px solid var(--color-c);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  background-color: var(--color-b);
+  border-bottom: 1px solid var(--color-c);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1rem 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

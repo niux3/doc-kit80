@@ -1,0 +1,19 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-a);
+  color: var(--color-d);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
+  background-size: 24px 24px;
+  min-height: 100vh;
+}
+
+[data-theme="light"] body {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.3) 1px, transparent 0);
+}

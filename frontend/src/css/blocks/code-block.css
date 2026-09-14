@@ -1,0 +1,62 @@
+.code-container {
+  margin: 3rem 0;
+}
+
+.code-block {
+  background-color: var(--color-a);
+  border: 1px solid var(--color-c);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--color-b);
+  border-bottom: 1px solid var(--color-c);
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-e);
+}
+
+.code-dots {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red { background-color: var(--color-h); }
+.dot-yellow { background-color: #eab308; }
+.dot-green { background-color: #22c55e; }
+
+pre {
+  padding: 1.25rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--color-d);
+  background-color: var(--color-b);
+}
+
+code {
+  font-family: var(--font-mono);
+  color: white;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.8rem;
+}
+
+/* Tokens de coloration syntaxique */
+.token-keyword { color: var(--color-f); font-weight: bold; }
+.token-string { color: var(--color-h); }
+.token-comment { color: var(--color-e); font-style: italic; }
+.token-function { color: var(--color-i); font-weight: bold; }

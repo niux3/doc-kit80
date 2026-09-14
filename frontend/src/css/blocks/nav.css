@@ -1,0 +1,62 @@
+nav {
+  display: flex;
+  gap: 1rem;
+}
+
+nav > * {
+  position: relative;
+  color: var(--color-d);
+}
+
+nav > *::after {
+  content: ' ';
+  position: absolute;
+  right: -0.7rem;
+  color: var(--color-d);
+}
+
+nav > *:last-child::after {
+  content: '';
+}
+
+nav a {
+  color: var(--color-d);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
+  transition: all 0.4s ease-in-out;
+}
+
+nav a:hover {
+  color: var(--color-h);
+  text-decoration: none;
+}
+
+/* Exception : Lien courant & externe */
+nav a[aria-current="page"] {
+  color: var(--color-h);
+  text-decoration: none;
+}
+
+nav a[target="_blank"] {
+  padding-right: 1.25rem;
+}
+
+nav a[target="_blank"]::before {
+  content: '↗';
+  display: inline-block;
+  position: absolute;
+  right: 0.2rem;
+  top: 0.15rem;
+  font-size: 0.75rem;
+  color: var(--color-d);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+nav a[target="_blank"]:hover::before {
+  color: var(--color-h);
+  transform: translate(2px, -2px);
+}

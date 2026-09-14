@@ -1,0 +1,29 @@
+h1, h2, h3 {
+  color: var(--color-i);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-weight: 800;
+}
+
+h1 {
+  font-size: 1.75rem;
+  border-left: 4px solid var(--color-f);
+  padding-left: 0.75rem;
+}
+
+h2 { font-size: 1.5rem; }
+
+p {
+  margin-bottom: 1rem;
+  color: var(--color-e);
+}
+
+a {
+  color: var(--color-f);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-h);
+}

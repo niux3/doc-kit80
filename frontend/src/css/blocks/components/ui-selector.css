@@ -1,0 +1,65 @@
+ui-selector {
+  position: relative;
+}
+
+ui-selector button {
+  background-color: transparent;
+  border: none;
+  color: var(--color-i);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+ui-selector button::after {
+  content: "";
+  display: inline-block;
+  width: 0.4em;
+  height: 0.4em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  margin-left: 0.25rem;
+  margin-top: -0.25em;
+  transform-origin: center center;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease-in-out;
+}
+
+ui-selector button[aria-expanded="true"] {
+  color: var(--color-h);
+}
+
+ui-selector button[aria-expanded="true"]::after {
+  transform: rotate(-135deg);
+}
+
+ui-selector #ui-selector-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--color-a);
+  border: 1px solid var(--color-c);
+  padding: 1rem;
+  box-shadow: var(--shadow);
+  list-style: none;
+}
+
+ui-selector #ui-selector-menu ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+ui-selector button:hover {
+  color: var(--color-h);
+}
+
+ui-selector button[aria-expanded="true"] + #ui-selector-menu {
+  display: block;
+}

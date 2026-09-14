@@ -1,0 +1,43 @@
+.btn-primary {
+  background-color: var(--color-f);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  padding: 0.75rem 1.25rem;
+  border: 1px solid var(--color-f);
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-g);
+  color: #ffffff;
+}
+
+.cmd-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--color-a);
+  border: 1px solid var(--color-c);
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.cmd-box button {
+  background: transparent;
+  border: 1px solid var(--color-c);
+  color: var(--color-f);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.cmd-box button:hover {
+  color: var(--color-h);
+  border-color: var(--color-h);
+}
