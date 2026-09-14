@@ -98,7 +98,7 @@ async def lifespan(app: FastAPI):
     #         print(f"✅ API {api_name} configurée")
     #
     yield
-    print("👋 Arrêt propre")
+    print("Arrêt propre")
 
 
 def create_app() -> FastAPI:
@@ -119,7 +119,7 @@ def create_app() -> FastAPI:
     _setup_basic_routes(app)
     _setup_exception_handlers(app)
 
-    print(f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} - {settings.APP_ENV}")
+    print(f"{settings.APP_NAME} v{settings.APP_VERSION} - {settings.APP_ENV}")
 
     return app
 

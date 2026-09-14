@@ -16,7 +16,8 @@ class SQLModelCRUD(AbstractCRUD[ModelType, CreateType, ReadType, UpdateType]):
         return session.query(self.model).all()
 
     def get_one(self, session: Session, id: int | str) -> Optional[ModelType]:
-        item = session.query(self.model).get(id)
+        # item = session.query(self.model).get(id)
+        item = session.get(self.model, id)
         if not item:
             return None
         return item
