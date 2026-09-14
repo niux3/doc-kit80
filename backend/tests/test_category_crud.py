@@ -52,8 +52,13 @@ def test_create_category_with_parent_and_language(
 
     # Setup de la catégorie parente
     parent_cat = category_crud.create(
-        session, CategoryCreate(name="Backend", lft=1,
-                                rgt=4, language_id=lang.id)
+        session,
+        CategoryCreate(
+            name="Backend",
+            lft=1,
+            rgt=4,
+            language_id=lang.id
+        )
     )
 
     # Création de la catégorie enfant
