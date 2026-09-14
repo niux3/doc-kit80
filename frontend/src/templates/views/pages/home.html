@@ -1,18 +1,104 @@
-[[extends:base]]
+<div data-template="home">
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand-container">
+        <span class="brand-title"><span class="prefix">Kit</span><span class="suffix">80</span></span>
+        <span class="version-badge">v1.0.0</span>
+      </div>
+      <nav>
+        <a href="#doc">Documentation</a>
+        <a href="https://github.com/niux3/kit80" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
 
-[[block:content]]
-  <h1>[[= title ]]</h1>
-  <p>[[= description ]]</p>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="badge-pill">⚡ SPA sans l'overhead des gros frameworks</div>
+      <h1 class="hero-title">
+        Le framework SPA taillé pour la <span class="highlight">simplicité</span> et le <span class="highlight">contrôle</span>.
+      </h1>
+      <p class="hero-desc">
+        Un Container IoC natif, un pipeline de middlewares prévisible et un cycle de vie clair. Conçu pour s'intégrer parfaitement avec FastAPI et les Web Components.
+      </p>
 
-  <section class="features-list">
-    <h2>[[= title2 ]]</h2>
-    <ul>
-    [[for(const feature of features){]]
-      <li>
-        <span class="label">[[= feature.label ]]</span>
-        <span class="status">[[= feature.status ]]</span>
-      </li>
-    [[}]]
-    </ul>
-  </section>
-[[/block]]
+      <div class="hero-actions">
+        <div class="cmd-box">
+          <span>npx kit80 init</span>
+          <button onclick="navigator.clipboard.writeText('npx kit80 init')">Copier</button>
+        </div>
+        <a href="#doc" class="btn-primary">Démarrer le tutoriel</a>
+      </div>
+    </section>
+
+    <!-- Code Preview Section -->
+    <section class="code-container">
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span>src/controller/DocsController.js</span>
+          <span>JavaScript (ES6)</span>
+        </div>
+        <pre><code><span class="token-keyword">import</span> { Controller } <span class="token-keyword">from</span> <span class="token-string">'@kit80/core'</span>
+
+          <span class="token-keyword">export class</span> <span class="token-function">DocsController</span> <span class="token-keyword">extends</span> <span class="token-function">Controller</span> {
+
+          <span class="token-keyword">async</span> <span class="token-function">afterLoad</span>(ctx) {
+          <span class="token-comment">// Interception &amp; Guard avant rendu</span>
+          <span class="token-keyword">if</span> (ctx.route.meta?.requiresAuth &amp;&amp; !<span class="token-keyword">this</span>.container.get(<span class="token-string">'auth'</span>).check()) {
+          <span class="token-keyword">return this</span>.redirect(<span class="token-string">'/login'</span>)
+          }
+          }
+
+          <span class="token-keyword">async</span> <span class="token-function">show</span>(ctx) {
+          <span class="token-keyword">const</span> markdown = <span class="token-keyword">this</span>.container.get(<span class="token-string">'markdown'</span>)
+          <span class="token-keyword">const</span> docContent = <span class="token-keyword">await fetch</span>(<span class="token-string">`/data/${ctx.params.slug}.md`</span>).then(r =&gt; r.text())
+
+          <span class="token-keyword">return this</span>.render(<span class="token-string">'docs/view'</span>, {
+          content: markdown.parse(docContent)
+          })
+          }
+          }</code></pre>
+      </div>
+    </section>
+
+    <!-- Features Grid Section -->
+    <section id="features" class="features-section">
+      <div class="section-header">
+        <h2>Conçu pour les développeurs exigeants</h2>
+        <p>Tout ce dont tu as besoin pour bâtir des applications Web performantes sans la complexité inutile.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="num-badge">01</div>
+          <h3>Container IoC Natif</h3>
+          <p>Injecte tes services (Auth, Markdown, Store) partout dans tes contrôleurs sans propager de dépendances globales.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="num-badge">02</div>
+          <h3>Pipeline de Hooks Étanche</h3>
+          <p>Maîtrise complète du cycle de vie : <code>beforeLoad</code>, <code>beforeRender</code>, <code>afterDestroy</code>. Fini les fuites mémoire.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="num-badge">03</div>
+          <h3>Web Components Ready</h3>
+          <p>Dossier <code>components/</code> prêt à l'emploi. Rendu natif dans le DOM sans étape de compilation lourde.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div>© 2026 Kit80 Framework. Open Source sous licence MIT.</div>
+      <div>Construit pour fonctionner main dans la main avec FastAPI.</div>
+    </footer>
+  </main>
+</div>
