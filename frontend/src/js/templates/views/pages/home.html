@@ -44,26 +44,25 @@
           <span>src/controller/DocsController.js</span>
           <span>JavaScript (ES6)</span>
         </div>
-        <pre><code><span class="token-keyword">import</span> { Controller } <span class="token-keyword">from</span> <span class="token-string">'@kit80/core'</span>
+<pre><code><span class="token-keyword">import</span> { AppController } <span class="token-keyword">from</span> <span class="token-string">'./AppController'</span>
 
-          <span class="token-keyword">export class</span> <span class="token-function">DocsController</span> <span class="token-keyword">extends</span> <span class="token-function">Controller</span> {
+<span class="token-keyword">export class</span> <span class="token-function">DocsController</span> <span class="token-keyword">extends</span> <span class="token-function">AppController</span> {
+  <span class="token-keyword">async</span> <span class="token-function">afterLoad</span>(ctx) {
+    <span class="token-comment">// Interception & Guard avant rendu</span>
+    <span class="token-keyword">if</span> (ctx.route.meta?.requiresAuth &amp;&amp; !<span class="token-keyword">this</span>.container.get(<span class="token-string">'auth'</span>).check()) {
+      <span class="token-keyword">return this</span>.redirect(<span class="token-string">'/login'</span>)
+    }
+  }
 
-          <span class="token-keyword">async</span> <span class="token-function">afterLoad</span>(ctx) {
-          <span class="token-comment">// Interception &amp; Guard avant rendu</span>
-          <span class="token-keyword">if</span> (ctx.route.meta?.requiresAuth &amp;&amp; !<span class="token-keyword">this</span>.container.get(<span class="token-string">'auth'</span>).check()) {
-          <span class="token-keyword">return this</span>.redirect(<span class="token-string">'/login'</span>)
-          }
-          }
+  <span class="token-keyword">async</span> <span class="token-function">show</span>(ctx) {
+    <span class="token-keyword">const</span> markdown = <span class="token-keyword">this</span>.container.get(<span class="token-string">'markdown'</span>)
+    <span class="token-keyword">const</span> docContent = <span class="token-keyword">await fetch</span>(<span class="token-string">`/data/${ctx.params.slug}.md`</span>).then(r =&gt; r.text())
 
-          <span class="token-keyword">async</span> <span class="token-function">show</span>(ctx) {
-          <span class="token-keyword">const</span> markdown = <span class="token-keyword">this</span>.container.get(<span class="token-string">'markdown'</span>)
-          <span class="token-keyword">const</span> docContent = <span class="token-keyword">await fetch</span>(<span class="token-string">`/data/${ctx.params.slug}.md`</span>).then(r =&gt; r.text())
-
-          <span class="token-keyword">return this</span>.render(<span class="token-string">'docs/view'</span>, {
-          content: markdown.parse(docContent)
-          })
-          }
-          }</code></pre>
+    <span class="token-keyword">return this</span>.render(<span class="token-string">'docs/view'</span>, {
+      content: markdown.parse(docContent)
+    })
+  }
+}</code></pre>
       </div>
     </section>
 
