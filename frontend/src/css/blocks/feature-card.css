@@ -1,0 +1,29 @@
+.feature-card {
+  background-color: var(--color-a);
+  border: 1px solid var(--color-c);
+  padding: 1.5rem;
+}
+
+.feature-card .num-badge {
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: var(--color-b);
+  border: 1px solid var(--color-c);
+  color: var(--color-f);
+  font-family: var(--font-mono);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}

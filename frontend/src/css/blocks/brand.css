@@ -1,0 +1,23 @@
+.brand-container {
+  display: flex;
+  align-items: center;
+}
+
+.brand-title {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  display: inline-block;
+  margin-bottom: 0;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.45));
+  transition: filter 0.3s ease;
+}
+
+.brand-title:hover {
+  filter: drop-shadow(0 0 12px rgba(255, 107, 107, 0.7));
+}
+
+.brand-title .prefix { color: var(--color-f); }
+.brand-title .suffix { color: var(--color-i); }

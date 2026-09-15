@@ -1,0 +1,20 @@
+.version-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-e);
+  border: 1px solid var(--color-c);
+  background-color: var(--color-a);
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.5rem;
+}
+
+.badge-pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-h);
+  border: 1px solid var(--color-c);
+  background-color: var(--color-a);
+  padding: 0.25rem 0.75rem;
+  margin-bottom: 1.5rem;
+}

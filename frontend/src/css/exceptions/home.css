@@ -1,0 +1,63 @@
+[data-template="home"] section {
+  padding: 0;
+}
+
+[data-template="home"] .hero-title {
+  font-size: 2.5rem;
+  border-left: none;
+  padding-left: 0;
+  margin-bottom: 1rem;
+}
+
+[data-template="home"] .hero-title .highlight {
+  color: var(--color-f);
+}
+[data-template="home"]{
+
+  .features-section {
+    border-top: 1px solid var(--color-c);
+  }
+
+  .features-section .section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 2.5rem auto;
+    padding: 40px 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .feature-card {
+    background-color: var(--color-a);
+    border: 1px solid var(--color-c);
+    padding: 1.5rem;
+  }
+
+  .feature-card .num-badge {
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: var(--color-b);
+    border: 1px solid var(--color-c);
+    color: var(--color-f);
+    font-family: var(--font-mono);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feature-card p {
+    font-size: 0.875rem;
+    margin-bottom: 0;
+  }
+}

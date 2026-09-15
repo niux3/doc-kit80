@@ -5,20 +5,23 @@
 /* Composition Layouts */
 @import "composition/main.css";
 @import "composition/grid.css";
+@import "composition/hero.css";
 
 /* Blocks (Composants) */
 @import "blocks/app-header.css";
 /* @import "blocks/app-content.css"; */
-/* @import "blocks/brand.css"; */
+@import "blocks/brand.css";
 @import "blocks/nav.css";
 @import "blocks/code-block.css";
-/* @import "blocks/feature-card.css"; */
+@import "blocks/feature-card.css";
 @import "blocks/components/ui-selector.css";
 @import "blocks/components/ui-toggle.css";
-
-/* Exceptions */
 
 /* Utilities */
 @import "utilities/typography.css";
 @import "utilities/button.css";
+@import "utilities/badges.css";
 @import "utilities/accessibility.css";
+
+/* Exceptions */
+@import "exceptions/home.css";
