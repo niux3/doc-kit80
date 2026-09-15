@@ -1,4 +1,5 @@
 import { Controller } from '../core/Controller'
+import { marked } from 'marked'
 
 
 export class AppController extends Controller {
@@ -10,6 +11,7 @@ export class AppController extends Controller {
                 localStorage.setItem('theme', fullState[key])
             }
         })
+        this.helperMarkdown()
     }
 
     async afterLoad(ctx) {
@@ -62,5 +64,15 @@ export class AppController extends Controller {
         localStorage.setItem('lang', lang)
         document.documentElement.setAttribute('lang', lang)
         return lang
+    }
+
+    helperMarkdown() {
+        const engine = this.container.get('templateEngine')
+        if (engine && typeof engine.helper === 'function') {
+            engine.helper('markdown', (content) => {
+                if (!content) return ''
+                return marked.parse(content)
+            })
+        }
     }
 }
