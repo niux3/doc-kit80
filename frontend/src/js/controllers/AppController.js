@@ -11,7 +11,7 @@ export class AppController extends Controller {
                 localStorage.setItem('theme', fullState[key])
             }
         })
-        this.helperMarkdown()
+        this._helperMarkdown()
     }
 
     async afterLoad(ctx) {
@@ -66,7 +66,7 @@ export class AppController extends Controller {
         return lang
     }
 
-    helperMarkdown() {
+    _helperMarkdown() {
         const engine = this.container.get('templateEngine')
         if (engine && typeof engine.helper === 'function') {
             engine.helper('markdown', (content) => {
