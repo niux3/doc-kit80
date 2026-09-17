@@ -1,0 +1,7 @@
+.EasyMDEContainer {
+  .CodeMirror,
+  .CodeMirror-focused,
+  .editor-toolbar button {
+    box-shadow: none !important;
+  }
+}

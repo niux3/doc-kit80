@@ -1,5 +1,18 @@
 [[extends:admin]]
 
 [[block:content]]
+<style>
+body{
+    background-color: white !important;
+}
+</style>
 <h1>Admin Home</h1>
+<form action="[[= helpers.urlFor('admin_home') ]]" method="post">
+  <div>
+    <ui-markdown-edit name="content" />
+  </div>
+  <div>
+    <button type="submit">Submit</button>
+  </div>
+</form>
 [[/block]]
