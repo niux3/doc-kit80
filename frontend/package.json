@@ -19,6 +19,7 @@
     "vitest": "^4.1.11"
   },
   "dependencies": {
+    "easymde": "^2.21.0",
     "marked": "^18.0.13"
   }
 }
