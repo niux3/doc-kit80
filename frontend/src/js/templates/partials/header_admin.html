@@ -1,6 +1,21 @@
-<header class="app-header">
-  <p>KIT 80</p>
-  <nav>
-    header_admin.html
-  </nav>
-</header>
+<nav class="navbar navbar-expand-lg bg-dark"  data-bs-theme="dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">admin</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="[[= helpers.urlFor('admin_language') ]]">language</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="[[= helpers.urlFor('admin_category') ]]">category</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="[[= helpers.urlFor('admin_post') ]]">post</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
