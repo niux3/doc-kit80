@@ -3,17 +3,28 @@ import cssUrl from 'easymde/dist/easymde.min.css?url'
 import { withKit80 } from '../../core/ComponentMixin.js'
 
 export class UiMarkdownEdit extends withKit80(HTMLElement) {
+    static formAssociated = true
+
     #textarea = null
     #easymde = null
     #linkStyle = null
+    #internals = null
+
+    constructor() {
+        super()
+        this.#internals = this.attachInternals()
+    }
 
     static get observedAttributes() {
-        return ['value', 'name', 'placeholder']
+        return ['value', 'name', 'placeholder', 'required']
     }
 
     connectedCallback() {
-        // Prévention contre les réattachements multiples
         if (this.#easymde) return
+
+        if (!this.hasAttribute('tabindex')) {
+            this.setAttribute('tabindex', '0')
+        }
 
         this.#injectStylesheet()
 
@@ -52,6 +63,13 @@ export class UiMarkdownEdit extends withKit80(HTMLElement) {
         this.#easymde.codemirror.on('change', () => {
             this.#handleMarkdownChange()
         })
+
+        // Redirige le focus vers CodeMirror en cas d'erreur de validation à la soumission
+        this.addEventListener('invalid', () => {
+            this.#easymde?.codemirror?.focus()
+        })
+
+        this.#updateFormValue()
     }
 
     disconnectedCallback() {
@@ -60,7 +78,6 @@ export class UiMarkdownEdit extends withKit80(HTMLElement) {
             this.#easymde = null
         }
 
-        // Ne supprime le stylesheet du head que s'il s'agit de la dernière instance présente dans le DOM
         if (this.#linkStyle && document.querySelectorAll('ui-markdown-edit').length === 0) {
             this.#linkStyle.remove()
             this.#linkStyle = null
@@ -73,10 +90,12 @@ export class UiMarkdownEdit extends withKit80(HTMLElement) {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (oldValue === newValue || !this.#easymde) return
+        if (oldValue === newValue) return
 
         if (name === 'value') {
             this.value = newValue
+        } else if (name === 'required' || name === 'name') {
+            this.#updateFormValue()
         }
     }
 
@@ -92,6 +111,19 @@ export class UiMarkdownEdit extends withKit80(HTMLElement) {
         if (this.#textarea) {
             this.#textarea.value = strVal
         }
+        this.#updateFormValue()
+    }
+
+    // --- Getters et méthodes requis pour l'API Form Associated ---
+    get validity() { return this.#internals.validity }
+    get validationMessage() { return this.#internals.validationMessage }
+    get willValidate() { return this.#internals.willValidate }
+
+    checkValidity() { return this.#internals.checkValidity() }
+    reportValidity() { return this.#internals.reportValidity() }
+
+    formResetCallback() {
+        this.value = this.getAttribute('value') || ''
     }
 
     #injectStylesheet() {
@@ -106,12 +138,30 @@ export class UiMarkdownEdit extends withKit80(HTMLElement) {
         }
     }
 
+    #updateFormValue() {
+        const val = this.value
+
+        this.#internals.setFormValue(val)
+
+        if (this.hasAttribute('required') && !val.trim()) {
+            // Suppression du 3e argument pour éviter la DOMException
+            this.#internals.setValidity(
+                { valueMissing: true },
+                'Veuillez remplir ce champ.'
+            )
+        } else {
+            this.#internals.setValidity({})
+        }
+    }
+
     #handleMarkdownChange() {
-        const val = this.#easymde.value()
-        // Maintient la textarea native synchronisée
+        const val = this.value
+
         if (this.#textarea) {
             this.#textarea.value = val
         }
+
+        this.#updateFormValue()
 
         this.dispatchEvent(new CustomEvent('ui_markdown_edit:change', {
             bubbles: true,

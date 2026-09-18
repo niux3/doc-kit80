@@ -3,13 +3,36 @@
 [[block:content]]
 <style>
 body{
-    background-color: white !important;
+    /*background-color: white !important;*/
+}
+ui-markdown-edit {
+    display: block;
+    position: relative;
+    outline: none;
 }
 </style>
 <h1>Admin Home</h1>
 <form action="[[= helpers.urlFor('admin_home') ]]" method="post">
+
   <div>
-    <ui-markdown-edit name="content" />
+    <select name="category">
+      <option value="">choisir</option>
+      <option value="1">category 1</option>
+      <option value="2">category 2</option>
+      <option value="3">category 3</option>
+      <option value="4">category 4</option>
+      <option value="5">category 5</option>
+    </select>
+  </div>
+  <div>
+    <select name="language">
+      <option value="">choisir</option>
+      <option value="1">English</option>
+      <option value="2">French</option>
+    </select>
+  </div>
+  <div>
+    <ui-markdown-edit name="content" required />
   </div>
   <div>
     <button type="submit">Submit</button>
