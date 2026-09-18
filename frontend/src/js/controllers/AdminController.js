@@ -16,6 +16,12 @@ export default class AdminController extends AppAdminController {
         this.setTitle('languages')
         const ctx = {
             title: this.getTitle(),
+            fields: ['id', 'name', 'abbr'],
+            data: [
+                { id: 1, name: 'English', abbr: 'en' },
+                { id: 2, name: 'French', abbr: 'fr' },
+            ],
+            link_add_name: 'admin_language',
         }
         return this.render('admin/home_gridview', ctx)
     }
@@ -24,6 +30,9 @@ export default class AdminController extends AppAdminController {
         this.setTitle('categories')
         const ctx = {
             title: this.getTitle(),
+            fields: [],
+            data: [],
+            link_add_name: 'admin_language',
         }
         return this.render('admin/home_gridview', ctx)
     }
@@ -32,6 +41,9 @@ export default class AdminController extends AppAdminController {
         this.setTitle('articles')
         const ctx = {
             title: this.getTitle(),
+            fields: [],
+            data: [],
+            link_add_name: 'admin_language',
         }
         return this.render('admin/home_gridview', ctx)
     }

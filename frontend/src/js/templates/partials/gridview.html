@@ -1,12 +1,27 @@
+[[ if (fields && fields.length > 0) { ]]
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>field</th>
+      [[ for (const field of fields) { ]]
+      <th>[[= field ]]</th>
+      [[ } ]]
+      <th>actions</th>
     </tr>
   </thead>
   <tbody>
+  [[ for (const row of data) { ]]
     <tr>
-      <td>data</td>
+      [[ for (const field of fields) { ]]
+      <td>[[= row[field] ]]</td>
+      [[ } ]]
+      <td>
+        <a href="#" class="btn btn-warning">éditer</a>
+        <a href="#" class="btn btn-danger">supprimer</a>
+      </td>
     </tr>
+    [[ } ]]
   </tbody>
 </table>
+[[ }else{ ]]
+<p>Aucun résultat</p>
+[[ } ]]
