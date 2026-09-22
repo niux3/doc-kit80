@@ -1,5 +1,4 @@
 export class UiSlug extends HTMLElement {
-    #textarea = null
     #input = null
     #relation = null
     #onRelationInput = null
