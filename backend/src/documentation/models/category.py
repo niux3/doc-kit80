@@ -40,7 +40,7 @@ class CategoryRead(CategoryBase):
 
 class CategoryCreate(CategoryBase):
     """Catégorie pour la création"""
-    @field_validator("parent_id", "language_id", mode="before")
+    @field_validator("parent_id", mode="before")
     @classmethod
     def empty_or_zero_to_none(cls, v):
         if v == 0 or v == "" or v == "0":
@@ -56,3 +56,10 @@ class CategoryUpdate(CategoryBase):
     rgt: Optional[int] = None
     parent_id: Optional[int] = None
     language_id: Optional[int] = None
+
+    @field_validator("parent_id", mode="before")
+    @classmethod
+    def empty_or_zero_to_none(cls, v):
+        if v == 0 or v == "" or v == "0":
+            return None
+        return v
