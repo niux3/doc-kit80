@@ -19,6 +19,7 @@ export class AppAdminController extends Controller {
             fields,
             data,
             link_edit_name: config.routeEdit,
+            link_delete_name: config.routeDelete,
             link_text: config.addText,
         }
         return this.render('admin/home_gridview', ctx)
@@ -132,5 +133,29 @@ export class AppAdminController extends Controller {
                 throw error
             }
         }
+    }
+
+    async _delete(entityKey, id) {
+        const config = this.entities[entityKey]
+
+        if (config?.endpoint) {
+            try {
+                const numericId = !isNaN(id) ? Number(id) : id
+                return await this.api.delete(`${config.endpoint}/${numericId}`)
+            } catch (error) {
+                console.error(`Erreur lors de la suppression de l'élément ${id} pour ${entityKey} :`, error)
+                throw error
+            }
+        }
+    }
+
+    // Action appelée par la route de suppression
+    async _destroy(req, entityKey) {
+        const id = req.params?.id
+        if (id) {
+            await this._delete(entityKey, id)
+        }
+        const config = this.entities[entityKey]
+        return this.redirect(this.urlFor(config.routeIndex))
     }
 }
