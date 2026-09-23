@@ -25,6 +25,7 @@ export default class AdminController extends AppAdminController {
                 routeEdit: 'admin_language_edit',
                 addText: 'Ajouter une langue',
                 fields: ['id', 'name', 'abbr'],
+                endpoint: '/api/v1/languages',
             },
             category: {
                 titleIndex: 'Catégories',
@@ -60,12 +61,18 @@ export default class AdminController extends AppAdminController {
 
 
     async admin_home(req) {
-        if (req.method === 'POST') {
-            console.log('AdminController > admin_home > ', req.body)
-            console.log('AdminController >admin_home > POST > ', req.method)
-            return this.render('admin/admin_home')
+        let ctx = {}
+        try {
+            ctx = {
+                data: await this.api.get('/api/health')
+            }
+            console.log('AdminController > admin_home > ', ctx.data)
+        } catch (error) {
+            ctx = {
+                data: { status: 'unhealthy', error: error.message }
+            }
         }
-        return this.render('admin/admin_home')
+        return this.render('admin/admin_home', ctx)
     }
 
     async admin_language(req) {

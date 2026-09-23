@@ -55,9 +55,26 @@ export class AppAdminController extends Controller {
     }
 
     // Handlers BDD surchargables
-    async _getData(entityKey) { console.log('getData >>>', this.languages); return await this.languages }
+    async _getData(entityKey) {
+        const config = this.entities[entityKey]
+
+        if (config?.endpoint) {
+            try {
+                return await this.api.get(config.endpoint)
+            } catch (error) {
+                console.error(`Erreur lors du chargement des données pour ${entityKey}:`, error)
+                return []
+            }
+        }
+
+        return []
+    }
+
     async _getOne(entityKey, id) { return {} }
     async _getFormDependencies(entityKey) { return {} }
-    async _create(entityKey, payload) { console.log('Create', entityKey, payload) }
+
+    async _create(entityKey, payload) {
+        console.log('Create', entityKey, payload)
+    }
     async _update(entityKey, id, payload) { console.log('Update', entityKey, id, payload) }
 }
