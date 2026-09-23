@@ -1,11 +1,16 @@
 <div class="row">
+  <p>[[= JSON.stringify(data) ]]</p>
   [[ if(typeof languages !== 'undefined' && languages.length > 0){]]
   <div class="form-group col-md-12 mt-3">
     <label for="language_id">Langue</label>
     <select class="form-select" id="language_id" name="language_id" required>
       <option value="">choisir une langue</option>
       [[ for (const language of languages) { ]]
-      <option value="[[= language.id ]]">[[= language.name ]]</option>
+        [[ if(language.id === data.language_id){ ]]
+        <option value="[[= language.id ]]" selected>[[= language.name ]]</option>
+        [[ } else { ]]
+        <option value="[[= language.id ]]">[[= language.name ]]</option>
+        [[ } ]]
       [[ } ]]
     </select>
   </div>
@@ -13,19 +18,19 @@
 
   <div class="form-group col-md-6 mt-3">
     <label for="name">Name</label>
-    <input type="text" class="form-control" id="name" name="name" required value="">
+    <input type="text" class="form-control" id="name" name="name" required value="[[= data.name ? data.name : '' ]]">
   </div>
   <div class="form-group col-md-6 mt-3">
     <label for="description">Description</label>
-    <input type="text" class="form-control" id="description" name="description" value="">
+    <input type="text" class="form-control" id="description" name="description" value="[[= data.description ? data.description : '' ]]">
   </div>
   <div class="form-group col-md-4 mt-3">
     <label for="lft">lft</label>
-    <input type="text" class="form-control" id="lft" name="lft" required value="">
+    <input type="text" class="form-control" id="lft" name="lft" required value="[[= data.lft ? data.lft : '' ]]">
   </div>
   <div class="form-group col-md-4 mt-3">
     <label for="rgt">rgt</label>
-    <input type="text" class="form-control" id="rgt" name="rgt" required value="">
+    <input type="text" class="form-control" id="rgt" name="rgt" required value="[[= data.rgt ? data.rgt : '' ]]">
   </div>
 
   [[ if(typeof categories !== 'undefined'){]]
@@ -34,7 +39,11 @@
     <select class="form-select" id="parent_id" name="parent_id">
       <option value="">choisir une catégorie</option>
       [[ for (const category of categories) { ]]
-      <option value="[[= category.id ]]">[[= category.name ]]</option>
+        [[ if(category.id === data.category_id){ ]]
+        <option value="[[= category.id ]]" selected>[[= category.name ]]</option>
+        [[ } else { ]]
+        <option value="[[= category.id ]]">[[= category.name ]]</option>
+        [[ } ]]
       [[ } ]]
     </select>
   </div>
