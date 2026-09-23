@@ -9,13 +9,13 @@
     </tr>
   </thead>
   <tbody>
-  [[ for (const row of data) { ]]
+    [[ for (const row of data) { ]]
     <tr>
       [[ for (const field of fields) { ]]
       <td>[[= row[field] ]]</td>
       [[ } ]]
       <td>
-        <a href="#" class="btn btn-warning">éditer</a>
+        <a href="[[= helpers.urlFor(link_edit_name, {id:row.id}) ]]" class="btn btn-secondary">éditer</a>
         <a href="#" class="btn btn-danger">supprimer</a>
       </td>
     </tr>
