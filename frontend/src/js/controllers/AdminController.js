@@ -41,7 +41,9 @@ export default class AdminController extends AppAdminController {
                 formtype: 'form_posts',
                 routeIndex: 'admin_post',
                 routeEdit: 'admin_post_edit',
+                routeDelete: 'admin_post_delete',
                 addText: 'Ajouter un article',
+                fields: ['id', 'title', 'language_id', 'category_id'],
                 endpoint: '/api/v1/posts',
                 dependencies: ['language', 'category'],
             }
