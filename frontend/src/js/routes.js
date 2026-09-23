@@ -13,4 +13,5 @@ export default [
 
     { path: '/admin/post', action: 'admin_post@AdminController', name: 'admin_post' },
     { path: '/admin/post/edit/:id', action: 'admin_post_edit@AdminController', name: 'admin_post_edit', params: { id: /[0-9]*/ } },
+    { path: '/admin/post/delete/:id', action: 'admin_post_delete@AdminController', name: 'admin_post_delete', params: { id: /[0-9]+/ } },
 ]
