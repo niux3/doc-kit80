@@ -8,7 +8,6 @@ export class AppAdminController extends Controller {
     // Méthode générique pour l'affichage de la grille (index)
     async _index(req, entityKey) {
         const config = this.entities[entityKey]
-        console.log('AdminController > _index > ', this.entities)
         this.setTitle(config.titleIndex)
 
         // Récupération des colonnes/données dynamiques (ex: via ORM/BDD)
@@ -70,11 +69,43 @@ export class AppAdminController extends Controller {
         return []
     }
 
-    async _getOne(entityKey, id) { return {} }
+    async _getOne(entityKey, id) {
+        const config = this.entities[entityKey]
+        if (config?.endpoint) {
+            try {
+                return await this.api.get(`${config.endpoint}/${id}`)
+            } catch (error) {
+                console.error(`Erreur lors de la récupération de l'élément ${id} pour ${entityKey} :`, error)
+                return {}
+            }
+        }
+        return {}
+    }
+
     async _getFormDependencies(entityKey) { return {} }
 
     async _create(entityKey, payload) {
-        console.log('Create', entityKey, payload)
+        const config = this.entities[entityKey]
+
+        if (config?.endpoint) {
+            try {
+                // Conversion de FormData en objet JS
+                let bodyData = payload
+                if (payload instanceof FormData) {
+                    bodyData = Object.fromEntries(payload.entries())
+                } else if (typeof payload === 'object' && payload !== null && !Array.isArray(payload)) {
+                    // Si payload est un objet de type URLSearchParams ou similaire
+                    bodyData = { ...payload }
+                }
+
+                console.log('AdminController > _create > ', config.endpoint, bodyData)
+                return await this.api.post(config.endpoint, bodyData)
+            } catch (error) {
+                console.error(`Erreur lors de la création de l'entité ${entityKey} :`, error)
+                throw error
+            }
+        }
     }
+
     async _update(entityKey, id, payload) { console.log('Update', entityKey, id, payload) }
 }
