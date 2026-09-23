@@ -1,17 +1,27 @@
+const adminEntities = ['language', 'category', 'post']
+
+const adminCrudRoutes = adminEntities.flatMap(entity => [
+    {
+        path: `/admin/${entity}`,
+        action: `admin_${entity}@AdminController`,
+        name: `admin_${entity}`
+    },
+    {
+        path: `/admin/${entity}/edit/:id`,
+        action: `admin_${entity}_edit@AdminController`,
+        name: `admin_${entity}_edit`,
+        params: { id: /[0-9]*/ }
+    },
+    {
+        path: `/admin/${entity}/delete/:id`,
+        action: `admin_${entity}_delete@AdminController`,
+        name: `admin_${entity}_delete`,
+        params: { id: /[0-9]+/ }
+    }
+])
 export default [
     { path: '/:lang', action: 'home@PagesController', name: 'home', params: { lang: /[a-z]{2}/ } },
     { path: '/', action: 'home@PagesController', name: 'home' },
     { path: '/admin', action: 'admin_home@AdminController', name: 'admin_home' },
-
-    { path: '/admin/language', action: 'admin_language@AdminController', name: 'admin_language' },
-    { path: '/admin/language/edit/:id', action: 'admin_language_edit@AdminController', name: 'admin_language_edit', params: { id: /[0-9]*/ } },
-    { path: '/admin/language/delete/:id', action: 'admin_language_delete@AdminController', name: 'admin_language_delete', params: { id: /[0-9]+/ } },
-
-    { path: '/admin/category', action: 'admin_category@AdminController', name: 'admin_category' },
-    { path: '/admin/category/edit/:id', action: 'admin_category_edit@AdminController', name: 'admin_category_edit', params: { id: /[0-9]*/ } },
-    { path: '/admin/category/delete/:id', action: 'admin_category_delete@AdminController', name: 'admin_category_delete', params: { id: /[0-9]+/ } },
-
-    { path: '/admin/post', action: 'admin_post@AdminController', name: 'admin_post' },
-    { path: '/admin/post/edit/:id', action: 'admin_post_edit@AdminController', name: 'admin_post_edit', params: { id: /[0-9]*/ } },
-    { path: '/admin/post/delete/:id', action: 'admin_post_delete@AdminController', name: 'admin_post_delete', params: { id: /[0-9]+/ } },
+    ...adminCrudRoutes
 ]
