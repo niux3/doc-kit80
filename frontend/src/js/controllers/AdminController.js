@@ -3,19 +3,61 @@ import { AppAdminController } from "./AppAdminController"
 
 export default class AdminController extends AppAdminController {
 
-    init() {
+    constructor(container) {
+        super(container)
         this.categories = [
             { id: 1, name: 'Category 1' },
             { id: 2, name: 'Category 2' },
-            { id: 3, name: 'Category 3' },
-            { id: 4, name: 'Category 4' },
-            { id: 5, name: 'Category 5' },
         ]
         this.languages = [
-            { id: 1, name: 'English' },
-            { id: 2, name: 'French' },
+            { id: 1, name: 'English', abbr: 'en' },
+            { id: 2, name: 'French', abbr: 'fr' },
         ]
+
+        // Configuration déclarative du CRUD
+        this.entities = {
+            language: {
+                titleIndex: 'Languages',
+                titleAdd: 'Ajouter une langue',
+                titleEdit: 'Éditer une langue',
+                formtype: 'form_languages',
+                routeIndex: 'admin_language',
+                routeEdit: 'admin_language_edit',
+                addText: 'Ajouter une langue',
+                fields: ['id', 'name', 'abbr'],
+            },
+            category: {
+                titleIndex: 'Catégories',
+                titleAdd: 'Ajouter une catégorie',
+                titleEdit: 'Éditer une catégorie',
+                formtype: 'form_categories',
+                routeIndex: 'admin_category',
+                routeEdit: 'admin_category_edit',
+                addText: 'Ajouter une catégorie',
+            },
+            post: {
+                titleIndex: 'Articles',
+                titleAdd: 'Ajouter un article',
+                titleEdit: 'Éditer un article',
+                formtype: 'form_posts',
+                routeIndex: 'admin_post',
+                routeEdit: 'admin_post_edit',
+                addText: 'Ajouter un article',
+            }
+        }
     }
+
+    // Injection des dépendances pour les formulaires (selects, etc.)
+    async _getFormDependencies(entityKey) {
+        if (entityKey === 'category' || entityKey === 'post') {
+            return {
+                languages: this.languages,
+                categories: this.categories,
+            }
+        }
+        return {}
+    }
+
 
     async admin_home(req) {
         if (req.method === 'POST') {
@@ -27,88 +69,26 @@ export default class AdminController extends AppAdminController {
     }
 
     async admin_language(req) {
-        this.setTitle('languages')
-        const ctx = {
-            title: this.getTitle(),
-            fields: ['id', 'name', 'abbr'],
-            data: [
-                { id: 1, name: 'English', abbr: 'en' },
-                { id: 2, name: 'French', abbr: 'fr' },
-            ],
-            link_add_name: 'admin_language_add',
-            link_text: "Ajouter une langue",
-        }
-        return this.render('admin/home_gridview', ctx)
+        return this._index(req, 'language')
     }
 
-    async admin_language_add(req) {
-        this.setTitle("Éditer une langue")
-        const ctx = {
-            title: this.getTitle(),
-            formtype: 'form_languages',
-        }
-        if (req.method === 'POST') {
-            console.log('AdminController > admin_language_add > ', req.body)
-            console.log('AdminController >admin_language_add > POST > ', req.method)
-            return this.redirect(this.urlFor('admin_language'))
-        }
-        return this.render('admin/edit', ctx)
+    async admin_language_edit(req) {
+        return this._edit(req, 'language')
     }
 
     async admin_category(req) {
-        this.setTitle('categories')
-        const ctx = {
-            title: this.getTitle(),
-            fields: [],
-            data: [],
-            link_add_name: 'admin_category_add',
-            link_text: "Ajouter une catégorie",
-        }
-        return this.render('admin/home_gridview', ctx)
+        return this._index(req, 'category')
     }
 
-    async admin_category_add(req) {
-        this.setTitle("Éditer une catégorie")
-        const ctx = {
-            title: this.getTitle(),
-            formtype: 'form_categories',
-            languages: this.languages,
-            categories: this.categories,
-        }
-        if (req.method === 'POST') {
-            console.log('AdminController > admin_category_add > ', req.body)
-            console.log('AdminController >admin_category_add > POST > ', req.method)
-            return this.redirect(this.urlFor('admin_category'))
-        }
-        return this.render('admin/edit', ctx)
+    async admin_category_edit(req) {
+        return this._edit(req, 'category')
     }
 
     async admin_post(req) {
-        this.setTitle('articles')
-        const ctx = {
-            title: this.getTitle(),
-            fields: [],
-            data: [],
-            link_add_name: 'admin_post_add',
-            link_text: "Ajouter un article",
-        }
-        return this.render('admin/home_gridview', ctx)
+        return this._index(req, 'post')
     }
 
-    async admin_post_add(req) {
-        this.setTitle("Éditer un article")
-        const ctx = {
-            title: this.getTitle(),
-            formtype: 'form_posts',
-            languages: this.languages,
-            categories: this.categories,
-        }
-        if (req.method === 'POST') {
-            console.log('AdminController > admin_post_add > ', req.body)
-            console.log('AdminController >admin_post_add > POST > ', req.method)
-            return this.redirect(this.urlFor('admin_post'))
-        }
-        return this.render('admin/edit', ctx)
-
+    async admin_post_edit(req) {
+        return this._edit(req, 'post')
     }
 }
