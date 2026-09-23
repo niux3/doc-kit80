@@ -5,14 +5,6 @@ export default class AdminController extends AppAdminController {
 
     constructor(container) {
         super(container)
-        this.categories = [
-            { id: 1, name: 'Category 1' },
-            { id: 2, name: 'Category 2' },
-        ]
-        this.languages = [
-            { id: 1, name: 'English', abbr: 'en' },
-            { id: 2, name: 'French', abbr: 'fr' },
-        ]
 
         // Configuration déclarative du CRUD
         this.entities = {
@@ -27,6 +19,7 @@ export default class AdminController extends AppAdminController {
                 addText: 'Ajouter une langue',
                 fields: ['id', 'name', 'abbr'],
                 endpoint: '/api/v1/languages',
+                dependencies: [],
             },
             category: {
                 titleIndex: 'Catégories',
@@ -35,7 +28,11 @@ export default class AdminController extends AppAdminController {
                 formtype: 'form_categories',
                 routeIndex: 'admin_category',
                 routeEdit: 'admin_category_edit',
+                routeDelete: 'admin_category_delete',
                 addText: 'Ajouter une catégorie',
+                fields: ['id', 'name'],
+                endpoint: '/api/v1/categories',
+                dependencies: ['language', 'category'],
             },
             post: {
                 titleIndex: 'Articles',
@@ -45,21 +42,11 @@ export default class AdminController extends AppAdminController {
                 routeIndex: 'admin_post',
                 routeEdit: 'admin_post_edit',
                 addText: 'Ajouter un article',
+                endpoint: '/api/v1/posts',
+                dependencies: ['language', 'category'],
             }
         }
     }
-
-    // Injection des dépendances pour les formulaires (selects, etc.)
-    async _getFormDependencies(entityKey) {
-        if (entityKey === 'category' || entityKey === 'post') {
-            return {
-                languages: this.languages,
-                categories: this.categories,
-            }
-        }
-        return {}
-    }
-
 
     async admin_home(req) {
         let ctx = {}
@@ -76,6 +63,9 @@ export default class AdminController extends AppAdminController {
         return this.render('admin/admin_home', ctx)
     }
 
+    /*
+    * Languages
+    */
     async admin_language(req) {
         return this._index(req, 'language')
     }
@@ -88,6 +78,9 @@ export default class AdminController extends AppAdminController {
         return this._destroy(req, 'language')
     }
 
+    /*
+    * Categories
+    */
     async admin_category(req) {
         return this._index(req, 'category')
     }
@@ -96,6 +89,13 @@ export default class AdminController extends AppAdminController {
         return this._edit(req, 'category')
     }
 
+    async admin_category_delete(req) {
+        return this._destroy(req, 'category')
+    }
+
+    /*
+    * Posts
+    */
     async admin_post(req) {
         return this._index(req, 'post')
     }

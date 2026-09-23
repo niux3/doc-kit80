@@ -43,13 +43,17 @@ export class AppAdminController extends Controller {
 
         // Chargement du record existant si édition
         const record = isUpdate ? await this._getOne(entityKey, req.params.id) : {}
+        const dependencies = await this._getFormDependencies(entityKey)
 
         const ctx = {
             title: this.getTitle(),
             formtype: config.formtype,
             data: record,
-            ...await this._getFormDependencies(entityKey) // Injecte languages, categories, etc.
+            ...dependencies,
         }
+
+        console.log('AdminController > _edit > ')
+        console.log(ctx)
 
         return this.render('admin/edit', ctx)
     }
@@ -83,7 +87,41 @@ export class AppAdminController extends Controller {
         return {}
     }
 
-    async _getFormDependencies(entityKey) { return {} }
+    async _getFormDependencies(entityKey) {
+        const config = this.entities[entityKey]
+        const depsConfig = config?.dependencies || []
+
+        if (depsConfig.length === 0) {
+            return {}
+        }
+
+        try {
+            const results = await Promise.all(
+                depsConfig.map(async (depKey) => {
+                    const depConfig = this.entities[depKey]
+                    const contextKey = depKey.endsWith('y')
+                        ? `${depKey.slice(0, -1)}ies`
+                        : `${depKey}s`
+
+                    if (depConfig?.endpoint) {
+                        try {
+                            const data = await this.api.get(depConfig.endpoint)
+                            return { [contextKey]: data || [] }
+                        } catch (e) {
+                            console.error(`Erreur chargement dépendance ${depKey}:`, e)
+                            return { [contextKey]: [] }
+                        }
+                    }
+                    return { [contextKey]: [] }
+                })
+            )
+
+            return Object.assign({}, ...results)
+        } catch (error) {
+            console.error(`Erreur lors du chargement des dépendances pour ${entityKey} :`, error)
+            return {}
+        }
+    }
 
     async _create(entityKey, payload) {
         const config = this.entities[entityKey]
