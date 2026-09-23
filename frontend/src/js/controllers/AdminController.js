@@ -23,6 +23,7 @@ export default class AdminController extends AppAdminController {
                 formtype: 'form_languages',
                 routeIndex: 'admin_language',
                 routeEdit: 'admin_language_edit',
+                routeDelete: 'admin_language_delete',
                 addText: 'Ajouter une langue',
                 fields: ['id', 'name', 'abbr'],
                 endpoint: '/api/v1/languages',
@@ -81,6 +82,10 @@ export default class AdminController extends AppAdminController {
 
     async admin_language_edit(req) {
         return this._edit(req, 'language')
+    }
+
+    async admin_language_delete(req) {
+        return this._destroy(req, 'language')
     }
 
     async admin_category(req) {
