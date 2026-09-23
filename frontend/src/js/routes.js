@@ -5,6 +5,7 @@ export default [
 
     { path: '/admin/language', action: 'admin_language@AdminController', name: 'admin_language' },
     { path: '/admin/language/edit/:id', action: 'admin_language_edit@AdminController', name: 'admin_language_edit', params: { id: /[0-9]*/ } },
+    { path: '/admin/language/delete/:id', action: 'admin_language_delete@AdminController', name: 'admin_language_delete', params: { id: /[0-9]+/ } },
 
     { path: '/admin/category', action: 'admin_category@AdminController', name: 'admin_category' },
     { path: '/admin/category/edit/:id', action: 'admin_category_edit@AdminController', name: 'admin_category_edit', params: { id: /[0-9]*/ } },
