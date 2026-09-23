@@ -46,6 +46,8 @@ export default class AdminController extends AppAdminController {
                 dependencies: ['language', 'category'],
             }
         }
+
+        this.#registerCrudMethods()
     }
 
     async admin_home(req) {
@@ -63,44 +65,11 @@ export default class AdminController extends AppAdminController {
         return this.render('admin/admin_home', ctx)
     }
 
-    /*
-    * Languages
-    */
-    async admin_language(req) {
-        return this._index(req, 'language')
-    }
-
-    async admin_language_edit(req) {
-        return this._edit(req, 'language')
-    }
-
-    async admin_language_delete(req) {
-        return this._destroy(req, 'language')
-    }
-
-    /*
-    * Categories
-    */
-    async admin_category(req) {
-        return this._index(req, 'category')
-    }
-
-    async admin_category_edit(req) {
-        return this._edit(req, 'category')
-    }
-
-    async admin_category_delete(req) {
-        return this._destroy(req, 'category')
-    }
-
-    /*
-    * Posts
-    */
-    async admin_post(req) {
-        return this._index(req, 'post')
-    }
-
-    async admin_post_edit(req) {
-        return this._edit(req, 'post')
+    #registerCrudMethods() {
+        for (const entity of Object.keys(this.entities)) {
+            this[`admin_${entity}`] = async (req) => this._index(req, entity)
+            this[`admin_${entity}_edit`] = async (req) => this._edit(req, entity)
+            this[`admin_${entity}_delete`] = async (req) => this._destroy(req, entity)
+        }
     }
 }
