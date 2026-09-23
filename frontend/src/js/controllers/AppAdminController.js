@@ -52,9 +52,6 @@ export class AppAdminController extends Controller {
             ...dependencies,
         }
 
-        console.log('AdminController > _edit > ')
-        console.log(ctx)
-
         return this.render('admin/edit', ctx)
     }
 
