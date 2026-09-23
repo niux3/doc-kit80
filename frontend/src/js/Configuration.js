@@ -22,7 +22,7 @@ export class Configuration {
      * Evaluates to local server in development or environment variable in production.
      * @type {string}
      */
-    static baseUrlApi = Configuration.debug ? 'http://localhost:5173' : 'http://localhost:8000'
+    static baseUrlApi = Configuration.debug ? 'http://localhost:8000' : 'http://localhost:8000'
 
     /**
      * The root DOM container element where the SPA mounts views.
