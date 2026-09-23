@@ -97,8 +97,6 @@ export class AppAdminController extends Controller {
                     // Si payload est un objet de type URLSearchParams ou similaire
                     bodyData = { ...payload }
                 }
-
-                console.log('AdminController > _create > ', config.endpoint, bodyData)
                 return await this.api.post(config.endpoint, bodyData)
             } catch (error) {
                 console.error(`Erreur lors de la création de l'entité ${entityKey} :`, error)
@@ -107,5 +105,32 @@ export class AppAdminController extends Controller {
         }
     }
 
-    async _update(entityKey, id, payload) { console.log('Update', entityKey, id, payload) }
+    async _update(entityKey, id, payload) {
+        const config = this.entities[entityKey]
+
+        if (config?.endpoint) {
+            try {
+                // 1. Conversion de FormData en objet JS simple
+                let bodyData = payload
+                if (payload instanceof FormData) {
+                    bodyData = Object.fromEntries(payload.entries())
+                } else if (typeof payload === 'object' && payload !== null) {
+                    bodyData = { ...payload }
+                }
+
+                // 2. Conversion de l'ID en nombre si c'est une chaîne numérique
+                const numericId = !isNaN(id) ? Number(id) : id
+
+                // 3. Optionnel : Si l'ID est dans le body et doit être un entier
+                if (bodyData.id !== undefined && !isNaN(bodyData.id)) {
+                    bodyData.id = Number(bodyData.id)
+                }
+
+                return await this.api.put(`${config.endpoint}/${numericId}`, bodyData)
+            } catch (error) {
+                console.error(`Erreur lors de la mise à jour de l'élément ${id} pour ${entityKey} :`, error)
+                throw error
+            }
+        }
+    }
 }
