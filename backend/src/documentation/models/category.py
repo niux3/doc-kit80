@@ -1,4 +1,5 @@
 from typing import Optional, List
+from pydantic import field_validator
 from sqlmodel import Field, SQLModel, Relationship
 
 
@@ -39,7 +40,12 @@ class CategoryRead(CategoryBase):
 
 class CategoryCreate(CategoryBase):
     """Catégorie pour la création"""
-    ...
+    @field_validator("parent_id", "language_id", mode="before")
+    @classmethod
+    def empty_or_zero_to_none(cls, v):
+        if v == 0 or v == "" or v == "0":
+            return None
+        return v
 
 
 class CategoryUpdate(CategoryBase):
