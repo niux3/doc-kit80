@@ -12,17 +12,40 @@ export class AppAdminController extends Controller {
 
         // Récupération des colonnes/données dynamiques (ex: via ORM/BDD)
         const fields = config.fields || (config.model ? config.model.__table__.columns.map(col => col.name) : [])
-        const data = await this._getData(entityKey)
+        const records = await this._getData(entityKey)
+        const formattedRecords = records.map(record => {
+            const row = {}
+            for (const field of config.fields) {
+                row[field] = this._getFieldValue(record, field)
+            }
+            return row
+        })
 
         const ctx = {
             title: this.getTitle(),
             fields,
-            data,
+            data: formattedRecords,
             link_edit_name: config.routeEdit,
             link_delete_name: config.routeDelete,
             link_text: config.addText,
         }
         return this.render('admin/home_gridview', ctx)
+    }
+
+    _getFieldValue(item, field) {
+        const value = item[field]
+
+        // Si le champ est un objet (ex: item.language = { id: 1, name: 'Français' })
+        if (value && typeof value === 'object') {
+            return value.name || value.title || value.label || value.id
+        }
+
+        // Fallback si la relation n'est pas chargée mais que la FK existe
+        if (value === undefined && item[`${field}_id`] !== undefined) {
+            return item[`${field}_id`]
+        }
+
+        return value ?? ''
     }
 
     // Méthode générique pour l'édition/création (formulaire)

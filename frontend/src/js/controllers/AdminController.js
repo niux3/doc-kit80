@@ -30,7 +30,7 @@ export default class AdminController extends AppAdminController {
                 routeEdit: 'admin_category_edit',
                 routeDelete: 'admin_category_delete',
                 addText: 'Ajouter une catégorie',
-                fields: ['id', 'name'],
+                fields: ['id', 'name', 'description', 'lft', 'rgt', 'language'],
                 endpoint: '/api/v1/categories',
                 dependencies: ['language', 'category'],
             },
@@ -43,7 +43,7 @@ export default class AdminController extends AppAdminController {
                 routeEdit: 'admin_post_edit',
                 routeDelete: 'admin_post_delete',
                 addText: 'Ajouter un article',
-                fields: ['id', 'title', 'language_id', 'category_id'],
+                fields: ['id', 'title', 'slug', 'category', 'language'],
                 endpoint: '/api/v1/posts',
                 dependencies: ['language', 'category'],
             }
