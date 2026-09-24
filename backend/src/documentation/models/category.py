@@ -1,6 +1,7 @@
 from typing import Optional, List
 from pydantic import field_validator
 from sqlmodel import Field, SQLModel, Relationship
+from src.documentation.models import LanguageRead
 
 
 class CategoryBase(SQLModel):
@@ -36,6 +37,7 @@ class Category(CategoryBase, table=True):
 class CategoryRead(CategoryBase):
     """Catégorie pour la lecture"""
     id: int
+    language: Optional[LanguageRead] = None
 
 
 class CategoryCreate(CategoryBase):
