@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from sqlmodel import Field, SQLModel, Relationship, TEXT
+from src.documentation.models import LanguageRead, CategoryRead
 
 
 class PostBase(SQLModel):
@@ -31,6 +32,8 @@ class Post(PostBase, table=True):
 class PostRead(PostBase):
     """Post pour la lecture"""
     id: int
+    language: Optional[LanguageRead] = None
+    category: Optional[CategoryRead] = None
 
 
 class PostCreate(PostBase):
